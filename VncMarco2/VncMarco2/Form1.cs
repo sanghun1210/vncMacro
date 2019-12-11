@@ -5,6 +5,8 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,11 +21,13 @@ namespace VncMarco2
         private BrowserDriver.BrowserType _browserType = BrowserDriver.BrowserType.Chrome;
         private DesktopClient _desktopClient;
         private TunnelBearClient _tunnelBearClient;
+        private string _localIp;
 
 
         public VpnMacro()
         {
             InitializeComponent();
+            _localIp = GetLocalIp();
         }
 
         public TunnelBearClient GetTunnelBearClient()
@@ -50,54 +54,98 @@ namespace VncMarco2
             return _tunnelBearClient;
         }
 
-        private void VpnTask(TunnelBearClient tunnelBearClient)
+        private async Task VpnTask(TunnelBearClient tunnelBearClient)
         {
-            // 스위치 온
-            TunnelBearSwitch tunnelBearOnOffSwitch = new TunnelBearSwitch(tunnelBearClient);
-            tunnelBearOnOffSwitch.SwitchToggle(); //On
-            Thread.Sleep(TimeSpan.FromSeconds(6));
+            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            var task = Task.Factory.StartNew(() => 
+            {
+                // 스위치 온
+                TunnelBearSwitch tunnelBearOnOffSwitch = new TunnelBearSwitch(tunnelBearClient);
+                tunnelBearOnOffSwitch.SwitchToggle(); //On
+                
+                for(int i=0; i<5; i++)
+                {
+                    try
+                    {
+                        var currentIp = GetLocalIp();
+                        if (!string.IsNullOrEmpty(currentIp) &&
+                        currentIp.Length > 3 &&
+                        currentIp != _localIp &&
+                        System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
+                            break;
+                    }
+                    catch { }
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                }
 
-            var driver = BrowserDriver.CreateBrowserDriver(_browserType);
-            ScenarioBrowser scenarioBrowser = new ScenarioBrowser(driver);
+                Thread.Sleep(TimeSpan.FromSeconds(3));
+                var driver = BrowserDriver.CreateBrowserDriver(_browserType);
 
-            //로그인
-            scenarioBrowser.NaverLogin(textBox_id.Text, textBox_pw.Text);
-            Thread.Sleep(TimeSpan.FromSeconds(5));
+                try
+                {
+                    OpenQA.Selenium.Support.UI.WebDriverWait wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                    ScenarioBrowser scenarioBrowser = new ScenarioBrowser(driver);
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
 
-            //전화번호 입력
-            //scenarioBrowser.NaverLoginPhoneNumber(textBox_phoneNumber.Text);
-            //Thread.Sleep(TimeSpan.FromSeconds(2));
+                    //로그인
+                    scenarioBrowser.NaverLogin(textBox_id.Text, textBox_pw.Text);
 
-            scenarioBrowser.NaverSearchFromMain(textBox_mainTarget.Text);
-            Thread.Sleep(TimeSpan.FromSeconds(5));
+                    //전화번호 입력
+                    //scenarioBrowser.NaverLoginPhoneNumber(textBox_phoneNumber.Text);
+                    scenarioBrowser.NaverSearchFromMain(textBox_mainTarget.Text);
 
-            scenarioBrowser.NaverTabMoveToBlog();
-            Thread.Sleep(TimeSpan.FromSeconds(5));
+                    scenarioBrowser.NaverTabMoveToBlog();
+                    scenarioBrowser.NaverBlogSelect();
+                    Thread.Sleep(TimeSpan.FromSeconds(42));
 
-            scenarioBrowser.NaverBlogSelect();
-            Thread.Sleep(TimeSpan.FromSeconds(42));
+                    //뒤로가기
+                    driver.SwitchTo().Window(driver.WindowHandles[0]);
+                    driver.Navigate().Back();
+                    
+                    scenarioBrowser.NaverSearchFromSub(textBox_subTarget.Text);
+                    scenarioBrowser.NaverTabMoveToBlog();
 
-            //뒤로가기
-            driver.SwitchTo().Window(driver.WindowHandles[0]);
-            driver.Navigate().Back();
-            Thread.Sleep(TimeSpan.FromSeconds(5));
+                    scenarioBrowser.NaverBlogSelect();
+                    Thread.Sleep(TimeSpan.FromSeconds(42));
+                }
+                catch(System.Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    try
+                    {
+                        driver.Quit();
+                        driver = null;
+                    }
+                    catch { }
+                    try
+                    {
+                        tunnelBearOnOffSwitch.SwitchToggle(); //off
+                    }
+                    catch { }
+                }
+            }, CancellationToken.None, TaskCreationOptions.None, scheduler);
 
-            scenarioBrowser.NaverSearchFromSub(textBox_subTarget.Text);
-            Thread.Sleep(TimeSpan.FromSeconds(5));
-
-            scenarioBrowser.NaverTabMoveToBlog();
-            Thread.Sleep(TimeSpan.FromSeconds(5));
-
-            scenarioBrowser.NaverBlogSelect();
-            Thread.Sleep(TimeSpan.FromSeconds(42));
-
-            driver.Quit();
-            driver = null;
-
-            tunnelBearOnOffSwitch.SwitchToggle(); //Off   
+            try
+            {
+                Task allTasks = Task.WhenAll(task);
+                await allTasks;
+            }
+            catch (AggregateException ae)
+            {
+                // Assume we know what's going on with this particular exception. 
+                // Rethrow anything else. AggregateException.Handle provides 
+                // another way to express this. See later example. 
+                foreach (var e in ae.InnerExceptions)
+                {
+                    throw;
+                }
+            }
         }
 
-        private void Ok_Click(object sender, EventArgs e)
+        private async void Ok_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(textBox_id.Text) || string.IsNullOrWhiteSpace(textBox_id.Text))
             {
@@ -141,11 +189,12 @@ namespace VncMarco2
 
             try
             {
+                Ok.Enabled = false;
                 TunnelBearClient tunnelBearClient = GetTunnelBearClient();
                 int count = Int32.Parse(textBox_iterationCount.Text);
                 for (int i=0; i<count;i++)
                 {
-                    VpnTask(tunnelBearClient);
+                    await VpnTask(tunnelBearClient);
 
                     //대기시간
                     int waitTime = Int32.Parse(textBox_waitTime.Text);
@@ -154,10 +203,11 @@ namespace VncMarco2
             }
             catch(System.Exception ex)
             {
+                
                 MessageBox.Show(ex.Message);
-                return;
+                
             }
-            
+            Ok.Enabled = true;
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
@@ -168,6 +218,29 @@ namespace VncMarco2
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             _browserType = BrowserDriver.BrowserType.Firefox;
+        }
+
+        private string GetLocalIp()
+        {
+            try
+            {
+                string localIP = "";
+                IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (IPAddress ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        localIP = ip.ToString();
+                        break;
+                    }
+                }
+                return localIP;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+            
         }
     }
 }

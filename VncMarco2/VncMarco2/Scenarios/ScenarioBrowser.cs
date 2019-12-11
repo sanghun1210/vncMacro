@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,10 @@ namespace VncMarco2.Scenarios
         public void NaverLogin(string id, string pw)
         {
             _driver.Navigate().GoToUrl("https://nid.naver.com/nidlogin.login");
+
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
+            wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(OpenQA.Selenium.By.Id("id")));
+
             var idField = _driver.FindElementById("id");
             idField.Click();
             Clipboard.SetText(id);
@@ -30,8 +35,6 @@ namespace VncMarco2.Scenarios
             Clipboard.SetText(pw);
             pwField.Click();
             new OpenQA.Selenium.Interactions.Actions(_driver).KeyDown(OpenQA.Selenium.Keys.Control).SendKeys("v").KeyUp(OpenQA.Selenium.Keys.Control).Perform();
-
-            Thread.Sleep(TimeSpan.FromSeconds(2));
 
             var loginButton = _driver.FindElement(OpenQA.Selenium.By.ClassName("btn_global"));
             loginButton.Click();
@@ -51,6 +54,9 @@ namespace VncMarco2.Scenarios
 
         public void NaverSearchFromMain(string target)
         {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
+            wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(OpenQA.Selenium.By.Id("query")));
+
             var searchField = _driver.FindElementById("query");
             searchField.Click();
             searchField.SendKeys(target);
@@ -61,6 +67,9 @@ namespace VncMarco2.Scenarios
 
         public void NaverSearchFromSub(string target)
         {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
+            wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(OpenQA.Selenium.By.XPath("//input[@id='nx_query']")));
+
             var searchField = _driver.FindElement(OpenQA.Selenium.By.XPath("//input[@id='nx_query']"));
             searchField.Clear();
             searchField.SendKeys(target);
@@ -71,13 +80,40 @@ namespace VncMarco2.Scenarios
 
         public void NaverTabMoveToBlog()
         {
+            try
+            {
+                //블로그는 lnb3
+                WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+                wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(OpenQA.Selenium.By.ClassName("lnb3")));
+
+                var blogTab = _driver.FindElement(OpenQA.Selenium.By.ClassName("lnb3"));
+                blogTab.Click();
+            }
+            catch
+            {
+                // 블로그탭을 못찾았을 경우
+                NaverTabMoveToBlogFromMore();
+            }
+        }
+
+        public void NaverTabMoveToBlogFromMore()
+        {
             //블로그는 lnb3
-            var blogTab = _driver.FindElement(OpenQA.Selenium.By.ClassName("lnb3"));
-            blogTab.Click();
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(OpenQA.Selenium.By.ClassName("lnb_more")));
+
+            var moreButton = _driver.FindElement(OpenQA.Selenium.By.ClassName("lnb_more"));
+            moreButton.Click();
+
+            var blogButton = _driver.FindElement(OpenQA.Selenium.By.PartialLinkText("블로그"));
+            blogButton.Click();
         }
 
         public void NaverBlogSelect()
         {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
+            wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(OpenQA.Selenium.By.XPath("//a[@class='sh_blog_title _sp_each_url _sp_each_title']")));
+
             var selectBlog = _driver.FindElement(OpenQA.Selenium.By.XPath("//a[@class='sh_blog_title _sp_each_url _sp_each_title']"));
             selectBlog.Click();
         }
