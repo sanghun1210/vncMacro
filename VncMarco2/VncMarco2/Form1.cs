@@ -91,8 +91,10 @@ namespace VncMarco2
             scenarioBrowser.NaverBlogSelect();
             Thread.Sleep(TimeSpan.FromSeconds(42));
 
+            driver.Quit();
+            driver = null;
+
             tunnelBearOnOffSwitch.SwitchToggle(); //Off   
-            driver.Close();
         }
 
         private void Ok_Click(object sender, EventArgs e)

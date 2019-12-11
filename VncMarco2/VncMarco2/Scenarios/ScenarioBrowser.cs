@@ -62,6 +62,7 @@ namespace VncMarco2.Scenarios
         public void NaverSearchFromSub(string target)
         {
             var searchField = _driver.FindElement(OpenQA.Selenium.By.XPath("//input[@id='nx_query']"));
+            searchField.Clear();
             searchField.SendKeys(target);
 
             var searchButton = _driver.FindElement(OpenQA.Selenium.By.XPath("//button[@class='bt_search']"));

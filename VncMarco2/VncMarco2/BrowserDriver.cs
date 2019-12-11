@@ -21,8 +21,8 @@ namespace VncMarco2
         {
             var driverService = ChromeDriverService.CreateDefaultService();
             //driverService.HideCommandPromptWindow = true; //크롬 콘솔창 숨기기 
-            driverService.LogPath = "E:\\chromedriver.log";
-            driverService.EnableVerboseLogging = true;
+            // driverService.LogPath = "E:\\chromedriver.log";
+            // driverService.EnableVerboseLogging = true;
 
             var options = new ChromeOptions();
             //options.AddArgument("--window-position=-32000,-32000"); 
