@@ -22,11 +22,14 @@ namespace VncMarco2
         private DesktopClient _desktopClient;
         private TunnelBearClient _tunnelBearClient;
         private string _localIp;
+        private volatile bool _isContinue = true;
 
 
         public VpnMacro()
         {
             InitializeComponent();
+            comboBox_ipchnage.SelectedIndex = 0;
+            comboBox_ipchnage.Enabled = false;
             _localIp = GetLocalIp();
         }
 
@@ -190,24 +193,41 @@ namespace VncMarco2
             try
             {
                 Ok.Enabled = false;
+                Stop.Enabled = true;
+
                 TunnelBearClient tunnelBearClient = GetTunnelBearClient();
-                int count = Int32.Parse(textBox_iterationCount.Text);
-                for (int i=0; i<count;i++)
+                textBox_log.Clear();
+                int count = 1;
+                while(true)
                 {
+                    textBox_log.AppendText(string.Format("{0} - 작업시작(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
+                    textBox_log.AppendText(Environment.NewLine);
                     await VpnTask(tunnelBearClient);
+
+                    textBox_log.AppendText(string.Format("{0} - 작업종료(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
+                    textBox_log.AppendText(Environment.NewLine);
+                    textBox_log.AppendText(string.Format("{0} - 작업대기({1}(분))", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), textBox_waitTime.Text));
+                    textBox_log.AppendText(Environment.NewLine);
 
                     //대기시간
                     int waitTime = Int32.Parse(textBox_waitTime.Text);
                     Thread.Sleep(TimeSpan.FromMinutes(waitTime));
+                    count++;
+
+                    if (!_isContinue)
+                        break;
                 }
             }
             catch(System.Exception ex)
             {
-                
-                MessageBox.Show(ex.Message);
-                
+                MessageBox.Show(ex.Message);   
             }
-            Ok.Enabled = true;
+            finally
+            {
+                Ok.Enabled = true;
+                Stop.Enabled = false;
+            }
+            
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
@@ -241,6 +261,13 @@ namespace VncMarco2
                 return string.Empty;
             }
             
+        }
+
+        private void Stop_Click(object sender, EventArgs e)
+        {
+            _isContinue = false;
+            Stop.Enabled = false;
+            textBox_log.AppendText("작업 종료 중...");
         }
     }
 }

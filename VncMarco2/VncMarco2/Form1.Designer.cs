@@ -37,30 +37,32 @@
             this.label3 = new System.Windows.Forms.Label();
             this.textBox_subTarget = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox_iterationCount = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.textBox_waitTime = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.label10 = new System.Windows.Forms.Label();
+            this.comboBox_ipchnage = new System.Windows.Forms.ComboBox();
+            this.textBox_log = new System.Windows.Forms.TextBox();
+            this.Stop = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Ok
             // 
-            this.Ok.Location = new System.Drawing.Point(112, 268);
+            this.Ok.Location = new System.Drawing.Point(86, 260);
             this.Ok.Name = "Ok";
-            this.Ok.Size = new System.Drawing.Size(134, 45);
+            this.Ok.Size = new System.Drawing.Size(94, 34);
             this.Ok.TabIndex = 0;
-            this.Ok.Text = "실행";
+            this.Ok.Text = "시작";
             this.Ok.UseVisualStyleBackColor = true;
             this.Ok.Click += new System.EventHandler(this.Ok_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(27, 61);
+            this.label1.Location = new System.Drawing.Point(27, 89);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(68, 12);
             this.label1.TabIndex = 1;
@@ -68,14 +70,14 @@
             // 
             // textBox_id
             // 
-            this.textBox_id.Location = new System.Drawing.Point(101, 58);
+            this.textBox_id.Location = new System.Drawing.Point(115, 86);
             this.textBox_id.Name = "textBox_id";
             this.textBox_id.Size = new System.Drawing.Size(220, 21);
             this.textBox_id.TabIndex = 2;
             // 
             // textBox_pw
             // 
-            this.textBox_pw.Location = new System.Drawing.Point(101, 89);
+            this.textBox_pw.Location = new System.Drawing.Point(115, 117);
             this.textBox_pw.Name = "textBox_pw";
             this.textBox_pw.Size = new System.Drawing.Size(220, 21);
             this.textBox_pw.TabIndex = 4;
@@ -84,7 +86,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(27, 92);
+            this.label2.Location = new System.Drawing.Point(27, 120);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(75, 12);
             this.label2.TabIndex = 3;
@@ -92,7 +94,7 @@
             // 
             // textBox_mainTarget
             // 
-            this.textBox_mainTarget.Location = new System.Drawing.Point(101, 122);
+            this.textBox_mainTarget.Location = new System.Drawing.Point(115, 150);
             this.textBox_mainTarget.Name = "textBox_mainTarget";
             this.textBox_mainTarget.Size = new System.Drawing.Size(220, 21);
             this.textBox_mainTarget.TabIndex = 6;
@@ -100,7 +102,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(27, 125);
+            this.label3.Location = new System.Drawing.Point(27, 153);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 12);
             this.label3.TabIndex = 5;
@@ -108,7 +110,7 @@
             // 
             // textBox_subTarget
             // 
-            this.textBox_subTarget.Location = new System.Drawing.Point(101, 155);
+            this.textBox_subTarget.Location = new System.Drawing.Point(115, 183);
             this.textBox_subTarget.Name = "textBox_subTarget";
             this.textBox_subTarget.Size = new System.Drawing.Size(220, 21);
             this.textBox_subTarget.TabIndex = 8;
@@ -116,32 +118,15 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(27, 158);
+            this.label4.Location = new System.Drawing.Point(27, 186);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(77, 12);
             this.label4.TabIndex = 7;
             this.label4.Text = "연관검색어 : ";
             // 
-            // textBox_iterationCount
-            // 
-            this.textBox_iterationCount.Location = new System.Drawing.Point(101, 189);
-            this.textBox_iterationCount.Name = "textBox_iterationCount";
-            this.textBox_iterationCount.Size = new System.Drawing.Size(73, 21);
-            this.textBox_iterationCount.TabIndex = 10;
-            this.textBox_iterationCount.Text = "100";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(27, 192);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(65, 12);
-            this.label5.TabIndex = 9;
-            this.label5.Text = "반복횟수 : ";
-            // 
             // textBox_waitTime
             // 
-            this.textBox_waitTime.Location = new System.Drawing.Point(101, 221);
+            this.textBox_waitTime.Location = new System.Drawing.Point(115, 216);
             this.textBox_waitTime.Name = "textBox_waitTime";
             this.textBox_waitTime.Size = new System.Drawing.Size(73, 21);
             this.textBox_waitTime.TabIndex = 12;
@@ -150,7 +135,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(27, 224);
+            this.label6.Location = new System.Drawing.Point(27, 219);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(65, 12);
             this.label6.TabIndex = 11;
@@ -159,7 +144,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(176, 225);
+            this.label7.Location = new System.Drawing.Point(190, 220);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(27, 12);
             this.label7.TabIndex = 13;
@@ -168,7 +153,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(27, 30);
+            this.label8.Location = new System.Drawing.Point(29, 58);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(68, 12);
             this.label8.TabIndex = 14;
@@ -178,7 +163,7 @@
             // 
             this.radioButton1.AutoSize = true;
             this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(101, 28);
+            this.radioButton1.Location = new System.Drawing.Point(117, 56);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(68, 16);
             this.radioButton1.TabIndex = 15;
@@ -191,7 +176,7 @@
             // 
             this.radioButton2.AutoSize = true;
             this.radioButton2.Enabled = false;
-            this.radioButton2.Location = new System.Drawing.Point(185, 28);
+            this.radioButton2.Location = new System.Drawing.Point(201, 56);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(61, 16);
             this.radioButton2.TabIndex = 16;
@@ -199,19 +184,60 @@
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(27, 25);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(76, 12);
+            this.label10.TabIndex = 19;
+            this.label10.Text = "IP 변경방법 :";
+            // 
+            // comboBox_ipchnage
+            // 
+            this.comboBox_ipchnage.FormattingEnabled = true;
+            this.comboBox_ipchnage.Items.AddRange(new object[] {
+            "TunnerBear",
+            "Realteck PCIe Controller"});
+            this.comboBox_ipchnage.Location = new System.Drawing.Point(116, 22);
+            this.comboBox_ipchnage.Name = "comboBox_ipchnage";
+            this.comboBox_ipchnage.Size = new System.Drawing.Size(219, 20);
+            this.comboBox_ipchnage.TabIndex = 20;
+            // 
+            // textBox_log
+            // 
+            this.textBox_log.Enabled = false;
+            this.textBox_log.Location = new System.Drawing.Point(31, 330);
+            this.textBox_log.Multiline = true;
+            this.textBox_log.Name = "textBox_log";
+            this.textBox_log.Size = new System.Drawing.Size(304, 134);
+            this.textBox_log.TabIndex = 21;
+            // 
+            // Stop
+            // 
+            this.Stop.Location = new System.Drawing.Point(187, 260);
+            this.Stop.Name = "Stop";
+            this.Stop.Size = new System.Drawing.Size(94, 34);
+            this.Stop.TabIndex = 22;
+            this.Stop.Text = "중지";
+            this.Stop.UseVisualStyleBackColor = true;
+            this.Stop.Click += new System.EventHandler(this.Stop_Click);
+            // 
             // VpnMacro
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(362, 334);
+            this.ClientSize = new System.Drawing.Size(364, 487);
+            this.Controls.Add(this.Stop);
+            this.Controls.Add(this.textBox_log);
+            this.Controls.Add(this.comboBox_ipchnage);
+            this.Controls.Add(this.label10);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBox_waitTime);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBox_iterationCount);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.textBox_subTarget);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.textBox_mainTarget);
@@ -239,14 +265,16 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBox_subTarget;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox_iterationCount;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBox_waitTime;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox comboBox_ipchnage;
+        private System.Windows.Forms.TextBox textBox_log;
+        private System.Windows.Forms.Button Stop;
     }
 }
 
