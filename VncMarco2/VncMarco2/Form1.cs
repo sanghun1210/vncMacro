@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenQA.Selenium.Remote;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,8 +29,7 @@ namespace VncMarco2
         public VpnMacro()
         {
             InitializeComponent();
-            comboBox_ipchnage.SelectedIndex = 0;
-            comboBox_ipchnage.Enabled = false;
+            comboBox_ipchnage.SelectedIndex = 0;            
             _localIp = GetLocalIp();
         }
 
@@ -65,8 +65,8 @@ namespace VncMarco2
                 // 스위치 온
                 TunnelBearSwitch tunnelBearOnOffSwitch = new TunnelBearSwitch(tunnelBearClient);
                 tunnelBearOnOffSwitch.SwitchToggle(); //On
-                
-                for(int i=0; i<5; i++)
+
+                for (int i = 0; i < 5; i++)
                 {
                     try
                     {
@@ -82,8 +82,16 @@ namespace VncMarco2
                 }
 
                 Thread.Sleep(TimeSpan.FromSeconds(3));
-                var driver = BrowserDriver.CreateBrowserDriver(_browserType);
-
+                RemoteWebDriver driver = null;
+                if (comboBox_ipchnage.SelectedIndex == 1)
+                {
+                    driver = BrowserDriver.CreateBrowserDriver(_browserType, "52.231.34.43", 3128);
+                }
+                else
+                {
+                    driver = BrowserDriver.CreateBrowserDriver(_browserType);
+                }
+                
                 try
                 {
                     OpenQA.Selenium.Support.UI.WebDriverWait wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, TimeSpan.FromSeconds(10));
@@ -99,7 +107,8 @@ namespace VncMarco2
 
                     scenarioBrowser.NaverTabMoveToBlog();
                     scenarioBrowser.NaverBlogSelect();
-                    Thread.Sleep(TimeSpan.FromSeconds(42));
+
+                    MouseMoves();
 
                     //뒤로가기
                     driver.SwitchTo().Window(driver.WindowHandles[0]);
@@ -109,7 +118,7 @@ namespace VncMarco2
                     scenarioBrowser.NaverTabMoveToBlog();
 
                     scenarioBrowser.NaverBlogSelect();
-                    Thread.Sleep(TimeSpan.FromSeconds(42));
+                    MouseMoves();
                 }
                 catch(System.Exception ex)
                 {
@@ -125,7 +134,7 @@ namespace VncMarco2
                     catch { }
                     try
                     {
-                        tunnelBearOnOffSwitch.SwitchToggle(); //off
+                        //tunnelBearOnOffSwitch.SwitchToggle(); //off
                     }
                     catch { }
                 }
@@ -146,6 +155,105 @@ namespace VncMarco2
                     throw;
                 }
             }
+        }
+
+        private async Task VpnTask(string ip, int port)
+        {
+            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            var task = Task.Factory.StartNew(() =>
+            {
+                RemoteWebDriver driver = null;
+                if (comboBox_ipchnage.SelectedIndex == 1)
+                {
+                    driver = BrowserDriver.CreateBrowserDriver(_browserType, ip, port);
+                }
+                else
+                {
+                    driver = BrowserDriver.CreateBrowserDriver(_browserType);
+                }
+
+                try
+                {
+                    OpenQA.Selenium.Support.UI.WebDriverWait wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                    ScenarioBrowser scenarioBrowser = new ScenarioBrowser(driver);
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+
+                    //로그인
+                    scenarioBrowser.NaverLogin(textBox_id.Text, textBox_pw.Text);
+
+                    //전화번호 입력
+                    //scenarioBrowser.NaverLoginPhoneNumber(textBox_phoneNumber.Text);
+                    scenarioBrowser.NaverSearchFromMain(textBox_mainTarget.Text);
+
+                    scenarioBrowser.NaverTabMoveToBlog();
+                    scenarioBrowser.NaverBlogSelect();
+
+                    MouseMoves();
+
+                    //뒤로가기
+                    driver.SwitchTo().Window(driver.WindowHandles[0]);
+                    driver.Navigate().Back();
+
+                    scenarioBrowser.NaverSearchFromSub(textBox_subTarget.Text);
+                    scenarioBrowser.NaverTabMoveToBlog();
+
+                    scenarioBrowser.NaverBlogSelect();
+                    MouseMoves();
+                }
+                catch (System.Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    try
+                    {
+                        driver.Quit();
+                        driver = null;
+                    }
+                    catch { }
+                    try
+                    {
+                        //tunnelBearOnOffSwitch.SwitchToggle(); //off
+                    }
+                    catch { }
+                }
+            }, CancellationToken.None, TaskCreationOptions.None, scheduler);
+
+            try
+            {
+                Task allTasks = Task.WhenAll(task);
+                await allTasks;
+            }
+            catch (AggregateException ae)
+            {
+                // Assume we know what's going on with this particular exception. 
+                // Rethrow anything else. AggregateException.Handle provides 
+                // another way to express this. See later example. 
+                foreach (var e in ae.InnerExceptions)
+                {
+                    throw;
+                }
+            }
+        }
+
+        public void MouseMoves()
+        {
+            Point orgPoint = Cursor.Position;
+            Random r = new Random();
+
+            for (int i = 0; i < 42; i++)
+            {
+                MouseMoveTo(orgPoint.X + r.Next(80), orgPoint.Y + r.Next(80));
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+            }
+        }
+
+        public void MouseMoveTo(int offsetX, int offsetY)
+        {
+            PointConverter pc = new PointConverter();
+            Point pt = new Point(offsetX, offsetY);
+            Cursor.Position = pt;
         }
 
         private async void Ok_Click(object sender, EventArgs e)
@@ -195,28 +303,57 @@ namespace VncMarco2
                 Ok.Enabled = false;
                 Stop.Enabled = true;
 
-                TunnelBearClient tunnelBearClient = GetTunnelBearClient();
-                textBox_log.Clear();
-                int count = 1;
-                while(true)
+                if (comboBox_ipchnage.SelectedIndex == 1)
                 {
-                    textBox_log.AppendText(string.Format("{0} - 작업시작(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
-                    textBox_log.AppendText(Environment.NewLine);
-                    await VpnTask(tunnelBearClient);
+                    textBox_log.Clear();
+                    int count = 1;
+                    while (true)
+                    {
+                        textBox_log.AppendText(string.Format("{0} - 작업시작(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
+                        textBox_log.AppendText(Environment.NewLine);
+                        await VpnTask("52.231.34.43", 3128);
 
-                    textBox_log.AppendText(string.Format("{0} - 작업종료(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
-                    textBox_log.AppendText(Environment.NewLine);
-                    textBox_log.AppendText(string.Format("{0} - 작업대기({1}(분))", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), textBox_waitTime.Text));
-                    textBox_log.AppendText(Environment.NewLine);
+                        textBox_log.AppendText(string.Format("{0} - 작업종료(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
+                        textBox_log.AppendText(Environment.NewLine);
+                        textBox_log.AppendText(string.Format("{0} - 작업대기({1}(분))", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), textBox_waitTime.Text));
+                        textBox_log.AppendText(Environment.NewLine);
 
-                    //대기시간
-                    int waitTime = Int32.Parse(textBox_waitTime.Text);
-                    Thread.Sleep(TimeSpan.FromMinutes(waitTime));
-                    count++;
+                        //대기시간
+                        int waitTime = Int32.Parse(textBox_waitTime.Text);
+                        Thread.Sleep(TimeSpan.FromMinutes(waitTime));
+                        count++;
 
-                    if (!_isContinue)
-                        break;
+                        if (!_isContinue)
+                            break;
+                    }
                 }
+                else
+                {
+                    TunnelBearClient tunnelBearClient = GetTunnelBearClient();
+                    textBox_log.Clear();
+                    int count = 1;
+                    while (true)
+                    {
+                        textBox_log.AppendText(string.Format("{0} - 작업시작(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
+                        textBox_log.AppendText(Environment.NewLine);
+                        await VpnTask(tunnelBearClient);
+
+                        textBox_log.AppendText(string.Format("{0} - 작업종료(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
+                        textBox_log.AppendText(Environment.NewLine);
+                        textBox_log.AppendText(string.Format("{0} - 작업대기({1}(분))", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), textBox_waitTime.Text));
+                        textBox_log.AppendText(Environment.NewLine);
+
+                        //대기시간
+                        int waitTime = Int32.Parse(textBox_waitTime.Text);
+                        Thread.Sleep(TimeSpan.FromMinutes(waitTime));
+                        count++;
+
+                        if (!_isContinue)
+                            break;
+                    }
+                }
+
+                
             }
             catch(System.Exception ex)
             {

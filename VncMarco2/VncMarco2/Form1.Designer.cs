@@ -198,7 +198,7 @@
             this.comboBox_ipchnage.FormattingEnabled = true;
             this.comboBox_ipchnage.Items.AddRange(new object[] {
             "TunnerBear",
-            "Realteck PCIe Controller"});
+            "ProxyServer"});
             this.comboBox_ipchnage.Location = new System.Drawing.Point(116, 22);
             this.comboBox_ipchnage.Name = "comboBox_ipchnage";
             this.comboBox_ipchnage.Size = new System.Drawing.Size(219, 20);

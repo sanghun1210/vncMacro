@@ -1,7 +1,10 @@
-﻿using OpenQA.Selenium.Remote;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -116,6 +119,8 @@ namespace VncMarco2.Scenarios
 
             var selectBlog = _driver.FindElement(OpenQA.Selenium.By.XPath("//a[@class='sh_blog_title _sp_each_url _sp_each_title']"));
             selectBlog.Click();
+
+
         }
     }
 }
