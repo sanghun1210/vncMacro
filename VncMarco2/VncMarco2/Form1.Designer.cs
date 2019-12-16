@@ -206,11 +206,10 @@
             // 
             // textBox_log
             // 
-            this.textBox_log.Enabled = false;
-            this.textBox_log.Location = new System.Drawing.Point(31, 330);
+            this.textBox_log.Location = new System.Drawing.Point(354, 22);
             this.textBox_log.Multiline = true;
             this.textBox_log.Name = "textBox_log";
-            this.textBox_log.Size = new System.Drawing.Size(304, 134);
+            this.textBox_log.Size = new System.Drawing.Size(390, 272);
             this.textBox_log.TabIndex = 21;
             // 
             // Stop
@@ -227,7 +226,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(364, 487);
+            this.ClientSize = new System.Drawing.Size(774, 311);
             this.Controls.Add(this.Stop);
             this.Controls.Add(this.textBox_log);
             this.Controls.Add(this.comboBox_ipchnage);

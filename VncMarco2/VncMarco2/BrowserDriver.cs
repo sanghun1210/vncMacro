@@ -34,16 +34,18 @@ namespace VncMarco2
         private static ChromeDriver CreateChromeBrowserDriver()
         {
             var driverService = ChromeDriverService.CreateDefaultService();
-            //driverService.HideCommandPromptWindow = true; //크롬 콘솔창 숨기기 
-            // driverService.LogPath = "E:\\chromedriver.log";
-            // driverService.EnableVerboseLogging = true;
-
+           
             var options = new ChromeOptions();
-            //options.AddArgument("--window-position=-32000,-32000"); 
-            //options.AddArgument("headless"); 
+            options.AddArgument("--start-maximized");
+            //options.AddArgument("headless");
+            //options.AddArgument("javascript.enabled", "");
+            //DesiredCapabilities caps = DesiredCapabilities.chrome();
+            //caps.SetCapability("chrome.switches", Arrays.asList("--disable-javascript"));
 
             //윈도우창 위치값을 화면밖으로 조정 
-            return new ChromeDriver(driverService);
+            driverService.HideCommandPromptWindow = true;
+
+            return new ChromeDriver(driverService, options);
         }
 
         private static ChromeDriver CreateChromeBrowserDriver(string proxyServerIp, int proxyPort)
