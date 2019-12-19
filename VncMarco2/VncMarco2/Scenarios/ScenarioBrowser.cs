@@ -126,7 +126,7 @@ namespace VncMarco2.Scenarios
             Thread.Sleep(TimeSpan.FromSeconds(2));
             //_driver.SwitchTo().Frame("minime");
 
-            _driver.SwitchTo().ParentFrame();
+            // _driver.SwitchTo().ParentFrame();
             _driver.ExecuteScript("window.scrollBy(0,1000)");
             //_driver.fra
             ((IJavaScriptExecutor)_driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight - 150)");

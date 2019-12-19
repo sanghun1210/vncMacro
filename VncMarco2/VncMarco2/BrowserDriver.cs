@@ -37,13 +37,13 @@ namespace VncMarco2
            
             var options = new ChromeOptions();
             options.AddArgument("--start-maximized");
-            //options.AddArgument("headless");
-            //options.AddArgument("javascript.enabled", "");
-            //DesiredCapabilities caps = DesiredCapabilities.chrome();
-            //caps.SetCapability("chrome.switches", Arrays.asList("--disable-javascript"));
+            // options.AddArgument("headless");
+            // options.AddArgument("javascript.enabled", "");
+            // DesiredCapabilities caps = DesiredCapabilities.chrome();
+            // caps.SetCapability("chrome.switches", Arrays.asList("--disable-javascript"));
 
-            //윈도우창 위치값을 화면밖으로 조정 
-            driverService.HideCommandPromptWindow = true;
+            // 윈도우창 위치값을 화면밖으로 조정 
+            // driverService.HideCommandPromptWindow = true;
 
             return new ChromeDriver(driverService, options);
         }

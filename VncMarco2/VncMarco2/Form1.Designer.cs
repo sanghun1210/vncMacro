@@ -47,14 +47,22 @@
             this.comboBox_ipchnage = new System.Windows.Forms.ComboBox();
             this.textBox_log = new System.Windows.Forms.TextBox();
             this.Stop = new System.Windows.Forms.Button();
+            this.textBox_pw3 = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBox_id3 = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBox_pw2 = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBox_id2 = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Ok
             // 
-            this.Ok.Location = new System.Drawing.Point(86, 260);
+            this.Ok.Location = new System.Drawing.Point(247, 251);
             this.Ok.Name = "Ok";
             this.Ok.Size = new System.Drawing.Size(94, 34);
-            this.Ok.TabIndex = 0;
+            this.Ok.TabIndex = 9;
             this.Ok.Text = "시작";
             this.Ok.UseVisualStyleBackColor = true;
             this.Ok.Click += new System.EventHandler(this.Ok_Click);
@@ -62,22 +70,22 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(27, 89);
+            this.label1.Location = new System.Drawing.Point(368, 23);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 12);
+            this.label1.Size = new System.Drawing.Size(74, 12);
             this.label1.TabIndex = 1;
-            this.label1.Text = "네이버 ID : ";
+            this.label1.Text = "네이버 ID1 : ";
             // 
             // textBox_id
             // 
-            this.textBox_id.Location = new System.Drawing.Point(115, 86);
+            this.textBox_id.Location = new System.Drawing.Point(456, 20);
             this.textBox_id.Name = "textBox_id";
             this.textBox_id.Size = new System.Drawing.Size(220, 21);
-            this.textBox_id.TabIndex = 2;
+            this.textBox_id.TabIndex = 3;
             // 
             // textBox_pw
             // 
-            this.textBox_pw.Location = new System.Drawing.Point(115, 117);
+            this.textBox_pw.Location = new System.Drawing.Point(456, 49);
             this.textBox_pw.Name = "textBox_pw";
             this.textBox_pw.Size = new System.Drawing.Size(220, 21);
             this.textBox_pw.TabIndex = 4;
@@ -86,23 +94,23 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(27, 120);
+            this.label2.Location = new System.Drawing.Point(368, 52);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 12);
+            this.label2.Size = new System.Drawing.Size(81, 12);
             this.label2.TabIndex = 3;
-            this.label2.Text = "네이버 PW : ";
+            this.label2.Text = "네이버 PW1 : ";
             // 
             // textBox_mainTarget
             // 
-            this.textBox_mainTarget.Location = new System.Drawing.Point(115, 150);
+            this.textBox_mainTarget.Location = new System.Drawing.Point(115, 85);
             this.textBox_mainTarget.Name = "textBox_mainTarget";
             this.textBox_mainTarget.Size = new System.Drawing.Size(220, 21);
-            this.textBox_mainTarget.TabIndex = 6;
+            this.textBox_mainTarget.TabIndex = 0;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(27, 153);
+            this.label3.Location = new System.Drawing.Point(27, 88);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 12);
             this.label3.TabIndex = 5;
@@ -110,15 +118,15 @@
             // 
             // textBox_subTarget
             // 
-            this.textBox_subTarget.Location = new System.Drawing.Point(115, 183);
+            this.textBox_subTarget.Location = new System.Drawing.Point(115, 118);
             this.textBox_subTarget.Name = "textBox_subTarget";
             this.textBox_subTarget.Size = new System.Drawing.Size(220, 21);
-            this.textBox_subTarget.TabIndex = 8;
+            this.textBox_subTarget.TabIndex = 1;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(27, 186);
+            this.label4.Location = new System.Drawing.Point(27, 121);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(77, 12);
             this.label4.TabIndex = 7;
@@ -126,16 +134,16 @@
             // 
             // textBox_waitTime
             // 
-            this.textBox_waitTime.Location = new System.Drawing.Point(115, 216);
+            this.textBox_waitTime.Location = new System.Drawing.Point(115, 151);
             this.textBox_waitTime.Name = "textBox_waitTime";
             this.textBox_waitTime.Size = new System.Drawing.Size(73, 21);
-            this.textBox_waitTime.TabIndex = 12;
+            this.textBox_waitTime.TabIndex = 2;
             this.textBox_waitTime.Text = "40";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(27, 219);
+            this.label6.Location = new System.Drawing.Point(27, 154);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(65, 12);
             this.label6.TabIndex = 11;
@@ -144,7 +152,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(190, 220);
+            this.label7.Location = new System.Drawing.Point(190, 155);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(27, 12);
             this.label7.TabIndex = 13;
@@ -206,15 +214,15 @@
             // 
             // textBox_log
             // 
-            this.textBox_log.Location = new System.Drawing.Point(354, 22);
+            this.textBox_log.Location = new System.Drawing.Point(29, 291);
             this.textBox_log.Multiline = true;
             this.textBox_log.Name = "textBox_log";
-            this.textBox_log.Size = new System.Drawing.Size(390, 272);
+            this.textBox_log.Size = new System.Drawing.Size(647, 165);
             this.textBox_log.TabIndex = 21;
             // 
             // Stop
             // 
-            this.Stop.Location = new System.Drawing.Point(187, 260);
+            this.Stop.Location = new System.Drawing.Point(348, 251);
             this.Stop.Name = "Stop";
             this.Stop.Size = new System.Drawing.Size(94, 34);
             this.Stop.TabIndex = 22;
@@ -222,11 +230,85 @@
             this.Stop.UseVisualStyleBackColor = true;
             this.Stop.Click += new System.EventHandler(this.Stop_Click);
             // 
+            // textBox_pw3
+            // 
+            this.textBox_pw3.Location = new System.Drawing.Point(456, 201);
+            this.textBox_pw3.Name = "textBox_pw3";
+            this.textBox_pw3.Size = new System.Drawing.Size(220, 21);
+            this.textBox_pw3.TabIndex = 8;
+            this.textBox_pw3.UseSystemPasswordChar = true;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(368, 204);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(81, 12);
+            this.label5.TabIndex = 25;
+            this.label5.Text = "네이버 PW3 : ";
+            // 
+            // textBox_id3
+            // 
+            this.textBox_id3.Location = new System.Drawing.Point(456, 172);
+            this.textBox_id3.Name = "textBox_id3";
+            this.textBox_id3.Size = new System.Drawing.Size(220, 21);
+            this.textBox_id3.TabIndex = 7;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(368, 175);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(74, 12);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "네이버 ID3 : ";
+            // 
+            // textBox_pw2
+            // 
+            this.textBox_pw2.Location = new System.Drawing.Point(456, 126);
+            this.textBox_pw2.Name = "textBox_pw2";
+            this.textBox_pw2.Size = new System.Drawing.Size(220, 21);
+            this.textBox_pw2.TabIndex = 6;
+            this.textBox_pw2.UseSystemPasswordChar = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(368, 129);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(81, 12);
+            this.label11.TabIndex = 29;
+            this.label11.Text = "네이버 PW2 : ";
+            // 
+            // textBox_id2
+            // 
+            this.textBox_id2.Location = new System.Drawing.Point(456, 97);
+            this.textBox_id2.Name = "textBox_id2";
+            this.textBox_id2.Size = new System.Drawing.Size(220, 21);
+            this.textBox_id2.TabIndex = 5;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(368, 100);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(74, 12);
+            this.label12.TabIndex = 27;
+            this.label12.Text = "네이버 ID2 : ";
+            // 
             // VpnMacro
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(774, 311);
+            this.ClientSize = new System.Drawing.Size(711, 468);
+            this.Controls.Add(this.textBox_pw2);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.textBox_id2);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.textBox_pw3);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.textBox_id3);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.Stop);
             this.Controls.Add(this.textBox_log);
             this.Controls.Add(this.comboBox_ipchnage);
@@ -274,6 +356,14 @@
         private System.Windows.Forms.ComboBox comboBox_ipchnage;
         private System.Windows.Forms.TextBox textBox_log;
         private System.Windows.Forms.Button Stop;
+        private System.Windows.Forms.TextBox textBox_pw3;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox textBox_id3;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBox_pw2;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox textBox_id2;
+        private System.Windows.Forms.Label label12;
     }
 }
 

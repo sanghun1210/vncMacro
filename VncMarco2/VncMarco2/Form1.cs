@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace VncMarco2
             return new TunnelBearClient(_desktopClient);
         }
 
-        private void BrowserTask()
+        private void BrowserTask(string id, string pw)
         {
             try
             {
@@ -58,7 +59,7 @@ namespace VncMarco2
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
 
                     //로그인
-                    scenarioBrowser.NaverLogin(textBox_id.Text, textBox_pw.Text);
+                    scenarioBrowser.NaverLogin(id, pw);
 
                     //전화번호 입력
                     //scenarioBrowser.NaverLoginPhoneNumber(textBox_phoneNumber.Text);
@@ -66,17 +67,7 @@ namespace VncMarco2
 
                     scenarioBrowser.NaverTabMoveToBlog();
                     scenarioBrowser.NaverBlogSelect();
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
-
-
-                    //ChromeClient client = new ChromeClient(_desktopClient);
-                    //_desktopClient.Session.Keyboard.SendKeys(OpenQA.Selenium.Keys.PageDown);
-                    //client.KeyPageDown();
-                     scenarioBrowser.PageKeyDown();
-                    // WindowScrollDown(driver);
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
-
-                    //scenarioBrowser.MouseMove(driver);
+                    Thread.Sleep(TimeSpan.FromSeconds(42));
 
                     //뒤로가기
                     driver.SwitchTo().Window(driver.WindowHandles[0]);
@@ -86,11 +77,50 @@ namespace VncMarco2
                     scenarioBrowser.NaverTabMoveToBlog();
 
                     scenarioBrowser.NaverBlogSelect();
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
-                    WindowScrollDown(driver);
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
+                    Thread.Sleep(TimeSpan.FromSeconds(42));
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+        }
 
-                    // scenarioBrowser.MouseMove(driver);
+        private void TestTask()
+        {
+            try
+            {
+                var driverService = ChromeDriverService.CreateDefaultService();
+
+                var options = new ChromeOptions();
+                options.AddArgument("--start-maximized");
+                //options.AddArgument("headless");
+                //options.AddArgument("javascript.enabled", "");
+                //DesiredCapabilities caps = DesiredCapabilities.chrome();
+                //caps.SetCapability("chrome.switches", Arrays.asList("--disable-javascript"));
+
+                //윈도우창 위치값을 화면밖으로 조정 
+                // driverService.HideCommandPromptWindow = true;
+
+                using (var driver = new ChromeDriver(driverService, options))
+                {
+                    OpenQA.Selenium.Support.UI.WebDriverWait wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                    ScenarioBrowser scenarioBrowser = new ScenarioBrowser(driver);
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+
+                    //로그인
+
+                    driver.Navigate().GoToUrl("https://blog.naver.com/0jakso/221272691640");
+                    //driver.Navigate().GoToUrl("https://en.wikipedia.org/wiki/Main_Page");
+
+                    IJavaScriptExecutor js = driver as IJavaScriptExecutor;
+                    Thread.Sleep(5000);
+                    js.ExecuteScript("window.scrollBy(0,950);");
+                    //var element = driver.FindElement(By.Id("area_sympathy221272691640")); 
+                    //((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", element);
+                    Console.Read();
+                    //scenarioBrowser.PageKeyDown();
+                    Thread.Sleep(TimeSpan.FromSeconds(5));
                 }
             }
             catch (System.Exception ex)
@@ -115,6 +145,9 @@ namespace VncMarco2
 
         private void Ok_Click(object sender, EventArgs e)
         {
+            //TestTask();
+            //return;
+
             if (string.IsNullOrEmpty(textBox_id.Text) || string.IsNullOrWhiteSpace(textBox_id.Text))
             {
                 MessageBox.Show("ID를 입력하세요.");
@@ -142,6 +175,8 @@ namespace VncMarco2
                 return;
             }
 
+            
+
             try
             {
                 Ok.Enabled = false;
@@ -152,10 +187,27 @@ namespace VncMarco2
                 int count = 1;
                 while (true)
                 {
-                    tunnelBearClient.SwitchToggleOn();
+                    
                     textBox_log.AppendText(string.Format("{0} - 작업시작(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
                     textBox_log.AppendText(Environment.NewLine);
-                    BrowserTask();
+
+                    //1차 아이디
+                    tunnelBearClient.SwitchToggleOn();
+                    BrowserTask(textBox_id.Text, textBox_pw.Text);
+                    tunnelBearClient.SwitchToggleOff();
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
+
+                    //2차 아이디
+                    tunnelBearClient.SwitchToggleOn();
+                    BrowserTask(textBox_id2.Text, textBox_pw2.Text);
+                    tunnelBearClient.SwitchToggleOff();
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
+
+                    //3차 아이디
+                    tunnelBearClient.SwitchToggleOn();
+                    BrowserTask(textBox_id3.Text, textBox_pw3.Text);
+                    tunnelBearClient.SwitchToggleOff();
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
 
                     textBox_log.AppendText(string.Format("{0} - 작업종료(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
                     textBox_log.AppendText(Environment.NewLine);
@@ -167,7 +219,7 @@ namespace VncMarco2
                     Thread.Sleep(TimeSpan.FromMinutes(waitTime));
                     count++;
 
-                    tunnelBearClient.SwitchToggleOff();
+                    
                     if (!_isContinue)
                         break;
                 }                
