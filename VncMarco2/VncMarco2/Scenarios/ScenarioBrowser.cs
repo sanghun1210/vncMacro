@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
@@ -15,9 +16,9 @@ namespace VncMarco2.Scenarios
 {
     public class ScenarioBrowser
     {
-        RemoteWebDriver _driver;
+        ChromeDriver _driver;
 
-        public ScenarioBrowser(RemoteWebDriver driver)
+        public ScenarioBrowser(ChromeDriver driver)
         {
             _driver = driver;
         }
@@ -121,76 +122,79 @@ namespace VncMarco2.Scenarios
             selectBlog.Click();
         }
 
-        public void PageKeyDown()
+        public void PageDown()
         {
-            Thread.Sleep(TimeSpan.FromSeconds(2));
-            //_driver.SwitchTo().Frame("minime");
+            Thread.Sleep(5000);
+            int size = _driver.FindElements(By.TagName("iframe")).Count;
+            for (int i = 0; i < size; i++)
+            {
+                try
+                {
+                    _driver.SwitchTo().Frame(i);
+                    Thread.Sleep(3000);
+                    ((IJavaScriptExecutor)_driver).ExecuteScript("window.scrollBy(0,1200)");
+                }
+                catch
+                {}
 
-            // _driver.SwitchTo().ParentFrame();
-            _driver.ExecuteScript("window.scrollBy(0,1000)");
-            //_driver.fra
-            ((IJavaScriptExecutor)_driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight - 150)");
-
-
-            //var elements = _driver.FindElements(OpenQA.Selenium.By.TagName("iframe"));
-
-            //for(int i=0; i<elements.Count;i++)
-            //{
-            //    try
-            //    {
-            //        _driver.SwitchTo().Frame(i);
-            //        _driver.ExecuteScript("window.scrollBy(0,1000)");
-            //        ((IJavaScriptExecutor)_driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight - 150)");
-            //    }
-            //    catch { }
-            //}
-
-            
+                try
+                {
+                    Thread.Sleep(2000);
+                    _driver.SwitchTo().Frame(i);
+                    Thread.Sleep(3000);
+                    var element = _driver.FindElement(By.Id("saveTagName"));
+                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", element);
+                }
+                catch
+                { }
+            }
             //_driver.SwitchTo().DefaultContent();
 
-            //_driver.ExecuteScript("window.scrollBy(0,1000)");
-            //((IJavaScriptExecutor)_driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight - 150)");
-
-
-            //_driver.Keyboard.SendKeys(OpenQA.Selenium.Keys.PageDown);
-            //WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
-            //wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(OpenQA.Selenium.By.TagName("body")));
-
-            //var body = _driver.FindElement(By.TagName("body"));
-            //body.SendKeys(OpenQA.Selenium.Keys.PageDown);
-            //body.SendKeys(OpenQA.Selenium.Keys.Enter);
-            Thread.Sleep(TimeSpan.FromSeconds(3));
+            //IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
+            //Thread.Sleep(5000);
+            //js.ExecuteScript("window.scrollBy(0,950);");
+            //Console.Read();
         }
 
-        public void MouseMove(RemoteWebDriver driver)
+        public void MouseMove(int moveTime)
         {
-            Point orgPoint = Cursor.Position;
+            //var endPoint = Screen.PrimaryScreen.Bounds;
+            //System.Windows.Forms.Cursor.Position = new Point(endPoint.Bottom / 2, endPoint.Right / 2);
+
+            Point centerPoint = Cursor.Position;
             Random r = new Random();
-
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < moveTime; i++)
             {
-                MouseMoveTo(orgPoint.X + r.Next(80), orgPoint.Y + r.Next(80));
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-            }
-
-            for (int i = 0; i < 15; i++)
-            {
-                MouseMoveTo(orgPoint.X + r.Next(80), orgPoint.Y + r.Next(80));
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-            }
-
-            for (int i = 0; i < 12; i++)
-            {
-                MouseMoveTo(orgPoint.X + r.Next(80), orgPoint.Y + r.Next(80));
+                MouseMoveTo(centerPoint.X + r.Next(120), centerPoint.Y + r.Next(120));
                 Thread.Sleep(TimeSpan.FromSeconds(1));
             }
         }
 
-        public void MouseMoveTo(int offsetX, int offsetY)
+        private void MouseMoveTo(int offsetX, int offsetY)
         {
             PointConverter pc = new PointConverter();
             Point pt = new Point(offsetX, offsetY);
             Cursor.Position = pt;
+        }
+
+        public void MouseMoveCenter()
+        {
+            int size = _driver.FindElements(By.TagName("iframe")).Count;
+            for (int i = 0; i < size; i++)
+            {
+                try
+                {
+                    _driver.SwitchTo().Frame(i);
+                    var gnb = _driver.FindElement(By.Id("blog-gnb"));
+                    Actions action1 = new Actions(_driver);
+                    action1.MoveToElement(gnb).Perform();
+
+                    PointConverter pc = new PointConverter();
+                    Point pt = new Point(gnb.Location.X + 300, gnb.Location.Y + 300);
+                    Cursor.Position = pt;
+                }
+                catch { }
+            }
         }
     }
 }

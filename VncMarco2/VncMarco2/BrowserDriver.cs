@@ -31,7 +31,7 @@ namespace VncMarco2
             };
         }
 
-        private static ChromeDriver CreateChromeBrowserDriver()
+        public static ChromeDriver CreateChromeBrowserDriver()
         {
             var driverService = ChromeDriverService.CreateDefaultService();
            
@@ -48,7 +48,7 @@ namespace VncMarco2
             return new ChromeDriver(driverService, options);
         }
 
-        private static ChromeDriver CreateChromeBrowserDriver(string proxyServerIp, int proxyPort)
+        public static ChromeDriver CreateChromeBrowserDriver(string proxyServerIp, int proxyPort)
         {
             var driverService = ChromeDriverService.CreateDefaultService();
             //driverService.HideCommandPromptWindow = true; //크롬 콘솔창 숨기기 

@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,7 @@ namespace VncMarco2
         {
             try
             {
-                using (RemoteWebDriver driver = BrowserDriver.CreateBrowserDriver(_browserType))
+                using (ChromeDriver driver = BrowserDriver.CreateChromeBrowserDriver())
                 {
                     OpenQA.Selenium.Support.UI.WebDriverWait wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, TimeSpan.FromSeconds(10));
                     ScenarioBrowser scenarioBrowser = new ScenarioBrowser(driver);
@@ -67,17 +68,32 @@ namespace VncMarco2
 
                     scenarioBrowser.NaverTabMoveToBlog();
                     scenarioBrowser.NaverBlogSelect();
-                    Thread.Sleep(TimeSpan.FromSeconds(42));
+
+                    Thread.Sleep(TimeSpan.FromSeconds(3));
+                    driver.SwitchTo().Window(driver.WindowHandles[1]);                    
+                    scenarioBrowser.PageDown();
+                    scenarioBrowser.MouseMoveCenter();
+                    scenarioBrowser.MouseMove(22);
+                    scenarioBrowser.PageDown();
+                    scenarioBrowser.MouseMove(22);
+
 
                     //뒤로가기
+
                     driver.SwitchTo().Window(driver.WindowHandles[0]);
                     driver.Navigate().Back();
 
                     scenarioBrowser.NaverSearchFromSub(textBox_subTarget.Text);
                     scenarioBrowser.NaverTabMoveToBlog();
-
                     scenarioBrowser.NaverBlogSelect();
-                    Thread.Sleep(TimeSpan.FromSeconds(42));
+
+                    Thread.Sleep(TimeSpan.FromSeconds(3));
+                    driver.SwitchTo().Window(driver.WindowHandles[2]);
+                    scenarioBrowser.PageDown();
+                    scenarioBrowser.MouseMoveCenter();
+                    scenarioBrowser.MouseMove(22);
+                    scenarioBrowser.PageDown();
+                    scenarioBrowser.MouseMove(22);
                 }
             }
             catch (System.Exception ex)
@@ -85,68 +101,94 @@ namespace VncMarco2
                 throw ex;
             }
         }
+
+        //private void TestTask()
+        //{
+        //    try
+        //    {
+        //        var driverService = ChromeDriverService.CreateDefaultService();
+
+        //        var options = new ChromeOptions();
+        //        options.AddArgument("--start-maximized");
+        //        //options.AddArgument("headless");
+        //        //options.AddArgument("javascript.enabled", "");
+        //        //DesiredCapabilities caps = DesiredCapabilities.chrome();
+        //        //caps.SetCapability("chrome.switches", Arrays.asList("--disable-javascript"));
+
+        //        //윈도우창 위치값을 화면밖으로 조정 
+        //        // driverService.HideCommandPromptWindow = true;
+
+        //        using (var driver = new ChromeDriver(driverService, options))
+        //        {
+        //            OpenQA.Selenium.Support.UI.WebDriverWait wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, TimeSpan.FromSeconds(10));
+        //            ScenarioBrowser scenarioBrowser = new ScenarioBrowser(driver);
+        //            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+
+        //            //로그인
+
+        //            driver.Navigate().GoToUrl("https://blog.naver.com/minjeon1/221266583284");
+        //            driver.Navigate().GoToUrl("https://blog.naver.com/0jakso/221272691640");
+        //            //driver.Navigate().GoToUrl("https://en.wikipedia.org/wiki/Main_Page");
+                    
+        //            int size = driver.FindElements(By.TagName("iframe")).Count;
+        //            for (int i = 0; i < size; i++)
+        //            {
+        //                try
+        //                {
+        //                    driver.SwitchTo().Frame(i);
+        //                    var gnb = driver.FindElement(By.Id("blog-gnb"));
+        //                    Actions action1 = new Actions(driver);
+        //                    action1.MoveToElement(gnb).Perform();
+
+        //                    PointConverter pc = new PointConverter();
+        //                    Point pt = new Point(gnb.Location.X + 300, gnb.Location.Y + 300);
+        //                    Cursor.Position = pt;
+        //                }
+        //                catch { }
+        //            }
+
+        //            scenarioBrowser.MouseMove(20);
+
+        //            for (int i = 0; i < size; i++)
+        //            {
+        //                try
+        //                {
+        //                    driver.SwitchTo().Frame(i);
+        //                    var element = driver.FindElement(By.Id("saveTagName"));
+        //                    ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView(true);", element);
+        //                }
+        //                catch { }
+        //            }
+        //            driver.SwitchTo().DefaultContent();
+
+                    
+
+
+        //            IJavaScriptExecutor js = driver as IJavaScriptExecutor;
+        //            Thread.Sleep(5000);
+        //            js.ExecuteScript("window.scrollBy(0,950);");
+        //            //var element = driver.FindElement(By.Id("area_sympathy221272691640")); 
+        //            //((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", element);
+        //            Console.Read();
+        //            //scenarioBrowser.PageKeyDown();
+        //            Thread.Sleep(TimeSpan.FromSeconds(5));
+        //        }
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
 
         private void TestTask()
         {
-            try
-            {
-                var driverService = ChromeDriverService.CreateDefaultService();
-
-                var options = new ChromeOptions();
-                options.AddArgument("--start-maximized");
-                //options.AddArgument("headless");
-                //options.AddArgument("javascript.enabled", "");
-                //DesiredCapabilities caps = DesiredCapabilities.chrome();
-                //caps.SetCapability("chrome.switches", Arrays.asList("--disable-javascript"));
-
-                //윈도우창 위치값을 화면밖으로 조정 
-                // driverService.HideCommandPromptWindow = true;
-
-                using (var driver = new ChromeDriver(driverService, options))
-                {
-                    OpenQA.Selenium.Support.UI.WebDriverWait wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                    ScenarioBrowser scenarioBrowser = new ScenarioBrowser(driver);
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
-
-                    //로그인
-
-                    driver.Navigate().GoToUrl("https://blog.naver.com/0jakso/221272691640");
-                    //driver.Navigate().GoToUrl("https://en.wikipedia.org/wiki/Main_Page");
-
-                    IJavaScriptExecutor js = driver as IJavaScriptExecutor;
-                    Thread.Sleep(5000);
-                    js.ExecuteScript("window.scrollBy(0,950);");
-                    //var element = driver.FindElement(By.Id("area_sympathy221272691640")); 
-                    //((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].scrollIntoView();", element);
-                    Console.Read();
-                    //scenarioBrowser.PageKeyDown();
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
-                }
-            }
-            catch (System.Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public void WindowScrollDown(RemoteWebDriver driver)
-        {
-
-            //driver.ExecuteScript("document.getElementById('Id of the control').value='khajamoizuddin@gmail.com'");
-
-            
-            Thread.Sleep(TimeSpan.FromSeconds(3));
-            ((IJavaScriptExecutor)driver).ExecuteScript("window.scrollTo(0, document.body.scrollHeight - 150)");
-            //Console.Read();
-
-            //body = driver.FindElementByXPath\('body')
-            //body.send_keys(Keys.PAGE_DOWN)
+            BrowserTask(textBox_id.Text, textBox_pw.Text);
         }
 
         private void Ok_Click(object sender, EventArgs e)
         {
-            //TestTask();
-            //return;
+            TestTask();
+            return;
 
             if (string.IsNullOrEmpty(textBox_id.Text) || string.IsNullOrWhiteSpace(textBox_id.Text))
             {
@@ -175,8 +217,6 @@ namespace VncMarco2
                 return;
             }
 
-            
-
             try
             {
                 Ok.Enabled = false;
@@ -197,17 +237,23 @@ namespace VncMarco2
                     tunnelBearClient.SwitchToggleOff();
                     Thread.Sleep(TimeSpan.FromSeconds(10));
 
-                    //2차 아이디
-                    tunnelBearClient.SwitchToggleOn();
-                    BrowserTask(textBox_id2.Text, textBox_pw2.Text);
-                    tunnelBearClient.SwitchToggleOff();
-                    Thread.Sleep(TimeSpan.FromSeconds(10));
+                    if(!string.IsNullOrEmpty(textBox_id2.Text) && !string.IsNullOrEmpty(textBox_pw2.Text))
+                    {
+                        //2차 아이디
+                        tunnelBearClient.SwitchToggleOn();
+                        BrowserTask(textBox_id2.Text, textBox_pw2.Text);
+                        tunnelBearClient.SwitchToggleOff();
+                        Thread.Sleep(TimeSpan.FromSeconds(10));
+                    }
 
-                    //3차 아이디
-                    tunnelBearClient.SwitchToggleOn();
-                    BrowserTask(textBox_id3.Text, textBox_pw3.Text);
-                    tunnelBearClient.SwitchToggleOff();
-                    Thread.Sleep(TimeSpan.FromSeconds(10));
+                    if (!string.IsNullOrEmpty(textBox_id3.Text) && !string.IsNullOrEmpty(textBox_pw3.Text))
+                    {
+                        //3차 아이디
+                        tunnelBearClient.SwitchToggleOn();
+                        BrowserTask(textBox_id3.Text, textBox_pw3.Text);
+                        tunnelBearClient.SwitchToggleOff();
+                        Thread.Sleep(TimeSpan.FromSeconds(10));
+                    }
 
                     textBox_log.AppendText(string.Format("{0} - 작업종료(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
                     textBox_log.AppendText(Environment.NewLine);
