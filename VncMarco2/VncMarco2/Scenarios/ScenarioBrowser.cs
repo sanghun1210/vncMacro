@@ -122,52 +122,104 @@ namespace VncMarco2.Scenarios
             selectBlog.Click();
         }
 
-        public void PageDown()
+
+        public void PageDown(int targetHeight)
         {
-            Thread.Sleep(5000);
-            int size = _driver.FindElements(By.TagName("iframe")).Count;
-            for (int i = 0; i < size; i++)
+            for(int i=0; i< targetHeight; i+=30)
             {
-                try
-                {
-                    _driver.SwitchTo().Frame(i);
-                    Thread.Sleep(3000);
-                    ((IJavaScriptExecutor)_driver).ExecuteScript("window.scrollBy(0,1200)");
-                }
-                catch
-                {}
-
-                try
-                {
-                    Thread.Sleep(2000);
-                    _driver.SwitchTo().Frame(i);
-                    Thread.Sleep(3000);
-                    var element = _driver.FindElement(By.Id("saveTagName"));
-                    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", element);
-                }
-                catch
-                { }
+                ((IJavaScriptExecutor)_driver).ExecuteScript("window.scrollBy(0,30)");
+                Thread.Sleep(30);
             }
-            //_driver.SwitchTo().DefaultContent();
-
-            //IJavaScriptExecutor js = _driver as IJavaScriptExecutor;
-            //Thread.Sleep(5000);
-            //js.ExecuteScript("window.scrollBy(0,950);");
-            //Console.Read();
         }
 
-        public void MouseMove(int moveTime)
+        public void PageDown()
         {
-            //var endPoint = Screen.PrimaryScreen.Bounds;
-            //System.Windows.Forms.Cursor.Position = new Point(endPoint.Bottom / 2, endPoint.Right / 2);
+            //Thread.Sleep(3000);
+            //int size = _driver.FindElements(By.TagName("iframe")).Count;
+            //for (int i = 0; i < size; i++)
+            //{
+            //    try
+            //    {
+            //        _driver.SwitchTo().Frame(i);
+            //        PageDown(7000);
+            //    }
+            //    catch
+            //    {}
 
-            Point centerPoint = Cursor.Position;
-            Random r = new Random();
-            for (int i = 0; i < moveTime; i++)
+            //    //try
+            //    //{
+            //    //    Thread.Sleep(2000);
+            //    //    _driver.SwitchTo().Frame(i);
+            //    //    Thread.Sleep(3000);
+            //    //    var element = _driver.FindElement(By.Id("saveTagName"));
+            //    //    ((IJavaScriptExecutor)_driver).ExecuteScript("arguments[0].scrollIntoView(true);", element);
+            //    //}
+            //    //catch
+            //    //{ }
+            //}
+
+
+            try
             {
-                MouseMoveTo(centerPoint.X + r.Next(120), centerPoint.Y + r.Next(120));
-                Thread.Sleep(TimeSpan.FromSeconds(1));
+                _driver.SwitchTo().Frame("screenFrame");
             }
+            catch
+            { }
+
+            try
+            {
+                _driver.SwitchTo().Frame("mainFrame");
+                PageDown(9000);
+            }
+            catch
+            { }
+            
+
+            _driver.SwitchTo().DefaultContent();
+        }
+
+        public void MouseMove()
+        {
+            // 일단 중앙으로 이동
+            try
+            {
+                Cursor.Position = new Point(Screen.PrimaryScreen.Bounds.Width / 2,
+                            Screen.PrimaryScreen.Bounds.Height / 2);
+
+                Point centerPoint = Cursor.Position;
+                for (int i = 0; i < 150; i++)
+                {
+                    MouseMoveTo(centerPoint.X + i, centerPoint.Y);
+                    Thread.Sleep(20);
+                }
+
+                for (int i = 0; i < 150; i++)
+                {
+                    MouseMoveTo(centerPoint.X, centerPoint.Y + i);
+                    Thread.Sleep(20);
+                }
+
+                for (int i = 0; i < 150; i++)
+                {
+                    MouseMoveTo(centerPoint.X + i, centerPoint.Y - i);
+                    Thread.Sleep(20);
+                }
+
+                for (int i = 0; i < 150; i++)
+                {
+                    MouseMoveTo(centerPoint.X - i, centerPoint.Y + i);
+                    Thread.Sleep(20);
+                }
+
+                for (int i = 0; i < 150; i++)
+                {
+                    MouseMoveTo(centerPoint.X + i, centerPoint.Y + i);
+                    Thread.Sleep(20);
+                }
+            }
+            catch
+            { }
+            
         }
 
         private void MouseMoveTo(int offsetX, int offsetY)
@@ -175,26 +227,6 @@ namespace VncMarco2.Scenarios
             PointConverter pc = new PointConverter();
             Point pt = new Point(offsetX, offsetY);
             Cursor.Position = pt;
-        }
-
-        public void MouseMoveCenter()
-        {
-            int size = _driver.FindElements(By.TagName("iframe")).Count;
-            for (int i = 0; i < size; i++)
-            {
-                try
-                {
-                    _driver.SwitchTo().Frame(i);
-                    var gnb = _driver.FindElement(By.Id("blog-gnb"));
-                    Actions action1 = new Actions(_driver);
-                    action1.MoveToElement(gnb).Perform();
-
-                    PointConverter pc = new PointConverter();
-                    Point pt = new Point(gnb.Location.X + 300, gnb.Location.Y + 300);
-                    Cursor.Position = pt;
-                }
-                catch { }
-            }
         }
     }
 }

@@ -25,13 +25,29 @@ namespace VncMarco2
         private BrowserDriver.BrowserType _browserType = BrowserDriver.BrowserType.Chrome;
         private DesktopClient _desktopClient;
         private volatile bool _isContinue = true;
-
+        Dictionary<string, string> _loginInfo =new Dictionary<string, string>();
 
         public VpnMacro()
         {
             InitializeComponent();
             comboBox_ipchnage.SelectedIndex = 0;
             textBox_log.ReadOnly = true;     
+        }
+
+        private void VpnMacro_Load(object sender, EventArgs e)
+        {
+            listView_Main.Columns.Add("네이버 ID", 110);
+            listView_Main.Columns.Add("네이버 PW", 110);
+            listView_Main.Columns.Add("메인 검색어", 140);
+            listView_Main.Columns.Add("연관 검색어", 140);
+            listView_Main.Columns.Add("대기시간(초)", 90);
+
+            listView_Main.View = View.Details;
+
+            listView_Main.FullRowSelect = true;
+            listView_Main.GridLines = true;
+
+            textBox_unitWaitTime.Text = "40";
         }
 
         public TunnelBearClient GetTunnelBearClient()
@@ -49,7 +65,7 @@ namespace VncMarco2
             return new TunnelBearClient(_desktopClient);
         }
 
-        private void BrowserTask(string id, string pw)
+        private void BrowserTask(string id, string pw, string mainTarget, string subTarget)
         {
             try
             {
@@ -64,18 +80,17 @@ namespace VncMarco2
 
                     //전화번호 입력
                     //scenarioBrowser.NaverLoginPhoneNumber(textBox_phoneNumber.Text);
-                    scenarioBrowser.NaverSearchFromMain(textBox_mainTarget.Text);
+                    scenarioBrowser.NaverSearchFromMain(mainTarget);
 
                     scenarioBrowser.NaverTabMoveToBlog();
                     scenarioBrowser.NaverBlogSelect();
 
                     Thread.Sleep(TimeSpan.FromSeconds(3));
-                    driver.SwitchTo().Window(driver.WindowHandles[1]);                    
+                    driver.SwitchTo().Window(driver.WindowHandles[1]);
+                    scenarioBrowser.MouseMove();
                     scenarioBrowser.PageDown();
-                    scenarioBrowser.MouseMoveCenter();
-                    scenarioBrowser.MouseMove(22);
-                    scenarioBrowser.PageDown();
-                    scenarioBrowser.MouseMove(22);
+                    scenarioBrowser.MouseMove();
+                    driver.Close();
 
 
                     //뒤로가기
@@ -83,17 +98,15 @@ namespace VncMarco2
                     driver.SwitchTo().Window(driver.WindowHandles[0]);
                     driver.Navigate().Back();
 
-                    scenarioBrowser.NaverSearchFromSub(textBox_subTarget.Text);
+                    scenarioBrowser.NaverSearchFromSub(subTarget);
                     scenarioBrowser.NaverTabMoveToBlog();
                     scenarioBrowser.NaverBlogSelect();
 
                     Thread.Sleep(TimeSpan.FromSeconds(3));
-                    driver.SwitchTo().Window(driver.WindowHandles[2]);
+                    driver.SwitchTo().Window(driver.WindowHandles[1]);
+                    scenarioBrowser.MouseMove();
                     scenarioBrowser.PageDown();
-                    scenarioBrowser.MouseMoveCenter();
-                    scenarioBrowser.MouseMove(22);
-                    scenarioBrowser.PageDown();
-                    scenarioBrowser.MouseMove(22);
+                    scenarioBrowser.MouseMove();
                 }
             }
             catch (System.Exception ex)
@@ -180,16 +193,90 @@ namespace VncMarco2
         //    }
         //}
 
-        private void TestTask()
-        {
-            BrowserTask(textBox_id.Text, textBox_pw.Text);
-        }
+        //private void TestTask()
+        //{
+        //    BrowserTask(textBox_id.Text, textBox_pw.Text);
+        //}
 
         private void Ok_Click(object sender, EventArgs e)
         {
-            TestTask();
-            return;
 
+            
+            try
+            {
+                Ok.Enabled = false;
+
+                TunnelBearClient tunnelBearClient = null;
+                if (checkBox_isUseTunnerBear.Checked)
+                {
+                    tunnelBearClient = GetTunnelBearClient();
+                }
+                
+                textBox_log.Clear();
+                int count = 1;
+                while (true)
+                {
+                    for (int i=0; i < listView_Main.Items.Count; i++)
+                    {
+                        if (checkBox_isUseTunnerBear.Checked)
+                        {
+                            tunnelBearClient.SwitchToggleOn();
+                        }
+
+                        textBox_log.AppendText(string.Format("{0} - 작업시작(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
+                        textBox_log.AppendText(Environment.NewLine);
+
+                        string id = listView_Main.Items[i].SubItems[0].Text;
+                        string pw = _loginInfo[id];
+                        string mainTarget = listView_Main.Items[i].SubItems[2].Text;
+                        string subTarget = listView_Main.Items[i].SubItems[3].Text;
+
+                        BrowserTask(id, pw, mainTarget, subTarget);
+
+                        if (checkBox_isUseTunnerBear.Checked)
+                        {
+                            tunnelBearClient.SwitchToggleOff();
+                        }
+                        
+                        Thread.Sleep(TimeSpan.FromSeconds(5));
+
+                        textBox_log.AppendText(string.Format("{0} - 작업종료(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
+                        textBox_log.AppendText(Environment.NewLine);
+                        textBox_log.AppendText(string.Format("{0} - 작업대기({1}(초))", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), textBox_unitWaitTime.Text));
+                        textBox_log.AppendText(Environment.NewLine);
+
+                        count++;
+                    }
+                }                
+            }
+            catch(System.Exception ex)
+            {
+                MessageBox.Show(ex.Message);   
+            }
+            finally
+            {
+                Ok.Enabled = true;
+            }
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            _browserType = BrowserDriver.BrowserType.Chrome;
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            _browserType = BrowserDriver.BrowserType.Firefox;
+        }
+
+        private void Stop_Click(object sender, EventArgs e)
+        {
+            _isContinue = false;
+            textBox_log.AppendText("작업 종료 중...");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
             if (string.IsNullOrEmpty(textBox_id.Text) || string.IsNullOrWhiteSpace(textBox_id.Text))
             {
                 MessageBox.Show("ID를 입력하세요.");
@@ -211,91 +298,21 @@ namespace VncMarco2
                 return;
             }
 
-            if (string.IsNullOrEmpty(textBox_subTarget.Text) || string.IsNullOrWhiteSpace(textBox_subTarget.Text))
+            if(!_loginInfo.ContainsKey(textBox_id.Text))
             {
-                MessageBox.Show("연관검색어를 입력하세요.");
-                return;
+                _loginInfo.Add(textBox_id.Text, textBox_pw.Text);
             }
+            
+            String[] arr = new String[5];
+            arr[0] = textBox_id.Text;
+            arr[1] = new String('*', textBox_pw.Text.Length);
+            arr[2] = textBox_mainTarget.Text;
+            arr[3] = textBox_subTarget.Text;
+            arr[4] = textBox_unitWaitTime.Text;
 
-            try
-            {
-                Ok.Enabled = false;
-                Stop.Enabled = true;
-
-                TunnelBearClient tunnelBearClient = GetTunnelBearClient();
-                textBox_log.Clear();
-                int count = 1;
-                while (true)
-                {
-                    
-                    textBox_log.AppendText(string.Format("{0} - 작업시작(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
-                    textBox_log.AppendText(Environment.NewLine);
-
-                    //1차 아이디
-                    tunnelBearClient.SwitchToggleOn();
-                    BrowserTask(textBox_id.Text, textBox_pw.Text);
-                    tunnelBearClient.SwitchToggleOff();
-                    Thread.Sleep(TimeSpan.FromSeconds(10));
-
-                    if(!string.IsNullOrEmpty(textBox_id2.Text) && !string.IsNullOrEmpty(textBox_pw2.Text))
-                    {
-                        //2차 아이디
-                        tunnelBearClient.SwitchToggleOn();
-                        BrowserTask(textBox_id2.Text, textBox_pw2.Text);
-                        tunnelBearClient.SwitchToggleOff();
-                        Thread.Sleep(TimeSpan.FromSeconds(10));
-                    }
-
-                    if (!string.IsNullOrEmpty(textBox_id3.Text) && !string.IsNullOrEmpty(textBox_pw3.Text))
-                    {
-                        //3차 아이디
-                        tunnelBearClient.SwitchToggleOn();
-                        BrowserTask(textBox_id3.Text, textBox_pw3.Text);
-                        tunnelBearClient.SwitchToggleOff();
-                        Thread.Sleep(TimeSpan.FromSeconds(10));
-                    }
-
-                    textBox_log.AppendText(string.Format("{0} - 작업종료(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
-                    textBox_log.AppendText(Environment.NewLine);
-                    textBox_log.AppendText(string.Format("{0} - 작업대기({1}(분))", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), textBox_waitTime.Text));
-                    textBox_log.AppendText(Environment.NewLine);
-
-                    //대기시간
-                    int waitTime = Int32.Parse(textBox_waitTime.Text);
-                    Thread.Sleep(TimeSpan.FromMinutes(waitTime));
-                    count++;
-
-                    
-                    if (!_isContinue)
-                        break;
-                }                
-            }
-            catch(System.Exception ex)
-            {
-                MessageBox.Show(ex.Message);   
-            }
-            finally
-            {
-                Ok.Enabled = true;
-                Stop.Enabled = false;
-            }
-        }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-            _browserType = BrowserDriver.BrowserType.Chrome;
-        }
-
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
-        {
-            _browserType = BrowserDriver.BrowserType.Firefox;
-        }
-
-        private void Stop_Click(object sender, EventArgs e)
-        {
-            _isContinue = false;
-            Stop.Enabled = false;
-            textBox_log.AppendText("작업 종료 중...");
+            ListViewItem lvt = new ListViewItem(arr);
+            lvt = new ListViewItem(arr);
+            listView_Main.Items.Add(lvt);   
         }
     }
 }
