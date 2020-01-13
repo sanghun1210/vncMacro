@@ -238,7 +238,7 @@ namespace VncMarco2
                             tunnelBearClient.SwitchToggleOff();
                         }
                         
-                        Thread.Sleep(TimeSpan.FromSeconds(5));
+                        Thread.Sleep(TimeSpan.FromSeconds(Int32.Parse(listView_Main.Items[i].SubItems[4].Text)));
 
                         textBox_log.AppendText(string.Format("{0} - 작업종료(#{1})", DateTime.Now.ToString(@"MM\/dd\/yyyy h\:mm tt"), count));
                         textBox_log.AppendText(Environment.NewLine);
